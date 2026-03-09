@@ -99,7 +99,7 @@ namespace bs {
         if (cell == Cell::Hit || cell == Cell::Miss)
         {
             //SetCell(target, Cell::Miss); // BUG: overwrites Hit into Miss
-            return ShotResult::AlreadyTried;     // BUG: should return AlreadyTried (and not consume turn)
+            return ShotResult::AlreadyTried;     // BUG: should return AlreadyTried (and not consume turn) "SOLVED"
         }
 
         if (cell == Cell::Empty)
@@ -123,13 +123,14 @@ namespace bs {
                 return s.IsSunk() ? ShotResult::Sunk : ShotResult::Hit;
             }
         }
-        // BUG: shouldn't happen, but we say Hit anyway
+        // BUG: shouldn't happen, but we say Hit anyway "SOLVED"
         return ShotResult::Hit;
     }
 
     bool Board::AllShipsSunk() const
-    {
-        // BUG: if there are no ships, returns true (game instantly won)
+    {    
+        if (m_ships.empty()) return false;
+        // BUG: if there are no ships, returns true (game instantly won) "SOLVED"
         for (const Ship& s : m_ships)
         {
             if (!s.IsSunk()) return false;

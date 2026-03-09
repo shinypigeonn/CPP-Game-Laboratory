@@ -2,6 +2,8 @@
 #include <algorithm>
 #include <cctype>
 #include <sstream>
+#include <iostream>
+
 
 namespace bs {
 
@@ -56,7 +58,8 @@ namespace bs {
             }
             catch (...)
             {
-                y = 0; // BUG: swallows errors
+                //y = 0; // BUG: swallows errors
+                std::cerr << "Error\n";
             }
         }
 
