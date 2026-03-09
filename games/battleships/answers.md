@@ -1,9 +1,9 @@
-﻿# Battleships Buggy Lab — Answers
+# Battleships Buggy Lab — Answers
 
 ## Team
-- Team name:
-- Partner A:
-- Partner B:
+- Team name: 
+- Partner A: Pulak
+- Partner B: Linnea
 
 ---
 
@@ -40,20 +40,60 @@ You must list at least:
 - 3 robustness issues (bad input handling, silent failures, crashes, etc.)
 
 ### Bug 1
-- Symptom:
-- Steps to reproduce (exact inputs):
-- Expected (spec):
+- Symptom: Overwrites Hit into Miss
+- Steps to reproduce (exact inputs): 
+    if (cell == Cell::Hit || cell == Cell::Miss)
+    {
+        SetCell(target, Cell::Miss);  
+        return ShotResult::AlreadyTried; 
+    }
+- Expected (spec): 
 - Actual:
-- Suspected root cause (file/function):
-- Fix approach:
+- Suspected root cause (file/function): Board.cpp
+- Fix approach: Instead of setting a value to the cell, just return the ShotResult
+    if (cell == Cell::Hit || cell == Cell::Miss)
+    {
+        return ShotResult::AlreadyTried;
+    }
 
 ### Bug 2
-- Symptom:
+- Symptom: Last segment not checked for overlap
 - Steps to reproduce (exact inputs):
+
+for (int i = 0; i < ship.length; ++i)
+{
+    Coord c = ship.start;
+    if (ship.orientation == Orientation::Horizontal) c.x += i;
+    else c.y += i;
+
+    if (!InBounds(c)) return false;
+
+    if (ship.orientation == Orientation::Vertical && i == ship.length - 1)
+    {
+        if (GetCell(c) != Cell::Empty) return false;
+        continue; // BUG: last segment not checked for overlap
+    }
+}
+
 - Expected (spec):
 - Actual:
-- Suspected root cause (file/function):
+- Suspected root cause (file/function): Board.cpp
 - Fix approach:
+        for (int i = 0; i < ship.length; ++i)
+        {
+            Coord c = ship.start;
+
+            if (ship.orientation == Orientation::Horizontal)
+                c.x += i;
+            else
+                c.y += i;
+
+            if (!InBounds(c))
+                return false;
+
+            if (GetCell(c) != Cell::Empty)
+                return false;
+        }
 
 ### Bug 3
 - Symptom:

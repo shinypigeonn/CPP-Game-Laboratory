@@ -33,6 +33,21 @@ namespace bs {
         for (int i = 0; i < ship.length; ++i)
         {
             Coord c = ship.start;
+
+            if (ship.orientation == Orientation::Horizontal)
+                c.x += i;
+            else
+                c.y += i;
+
+            if (!InBounds(c))
+                return false;
+
+            if (GetCell(c) != Cell::Empty)
+                return false;
+        }
+        /*for (int i = 0; i < ship.length; ++i)
+        {
+            Coord c = ship.start;
             if (ship.orientation == Orientation::Horizontal) c.x += i;
             else c.y += i;
 
@@ -40,11 +55,11 @@ namespace bs {
 
             if (ship.orientation == Orientation::Vertical && i == ship.length - 1)
             {
-                continue; // BUG: last segment not checked for overlap
+                if (GetCell(c) != Cell::Empty) return false;
+                //continue; // BUG: last segment not checked for overlap
             }
 
-            if (GetCell(c) != Cell::Empty) return false;
-        }
+        }*/
         return true;
     }
 
@@ -73,16 +88,18 @@ namespace bs {
 
     ShotResult Board::Shoot(Coord target)
     {
-        if (!InBounds(target)) return ShotResult::Invalid;
+        if (!InBounds(target)) 
+            return ShotResult::Invalid;
 
         Cell cell = GetCell(target);
 
         // Intended by spec: AlreadyTried for Hit/Miss.
         // BUG: repeated shots behave incorrectly and even overwrite Hit -> Miss.
+
         if (cell == Cell::Hit || cell == Cell::Miss)
         {
-            SetCell(target, Cell::Miss); // BUG: overwrites Hit into Miss
-            return ShotResult::Miss;     // BUG: should return AlreadyTried (and not consume turn)
+            //SetCell(target, Cell::Miss); // BUG: overwrites Hit into Miss
+            return ShotResult::AlreadyTried;     // BUG: should return AlreadyTried (and not consume turn)
         }
 
         if (cell == Cell::Empty)
@@ -106,7 +123,6 @@ namespace bs {
                 return s.IsSunk() ? ShotResult::Sunk : ShotResult::Hit;
             }
         }
-
         // BUG: shouldn't happen, but we say Hit anyway
         return ShotResult::Hit;
     }
