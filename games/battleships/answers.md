@@ -96,12 +96,31 @@ for (int i = 0; i < ship.length; ++i)
         }
 
 ### Bug 3
-- Symptom:
+- Symptom: TryCatch doesn't output error in the console
 - Steps to reproduce (exact inputs):
+
+ if (!digits.empty())
+ {
+     hasDigit = true;
+     try
+     {
+         y = std::stoi(digits) - 1;
+     }
+     catch (...)
+     {
+         y = 0; // BUG: swallows errors
+     }
+ }
 - Expected (spec):
 - Actual:
-- Suspected root cause (file/function):
+- Suspected root cause (file/function): Coord.cpp
 - Fix approach:
+
+catch (...)
+{               
+    std::cerr << "Error\n";
+}
+    
 
 ### Bug 4
 - Symptom:
